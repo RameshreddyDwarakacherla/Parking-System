@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Parking - User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            padding: 2rem 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #1e3c72;
+            display: inline-block;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: #1e3c72;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-available {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .badge-full {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border: none;
+        }
+
+        .booking-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .vehicle-stats {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin: 1rem auto;
+            max-width: 200px;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: auto;
+        }
+
+        .booking-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .flash-message {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #1e3c72;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-parking me-2"></i>Smart Parking
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-user me-1"></i>Welcome, {{ current_user.username }}
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="section-title mb-4">
+            <i class="fas fa-map-marker-alt me-2"></i>Available Parking Areas
+        </h2>
+        
+        <div class="row">
+            {% for area in areas %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-building me-2"></i>{{ area.name }}
+                        </h5>
+                        
+                        <div class="vehicle-stats">
+                            {% if area.total_two_wheeler > 0 %}
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-motorcycle me-2"></i>Two Wheeler</span>
+                                <span class="badge {% if area.available_two_wheeler > 0 %}badge-available{% else %}badge-full{% endif %}">
+                                    {{ area.available_two_wheeler }}/{{ area.total_two_wheeler }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if area.total_four_wheeler > 0 %}
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-car me-2"></i>Four Wheeler</span>
+                                <span class="badge {% if area.available_four_wheeler > 0 %}badge-available{% else %}badge-full{% endif %}">
+                                    {{ area.available_four_wheeler }}/{{ area.total_four_wheeler }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if area.total_bus > 0 %}
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-bus me-2"></i>Bus</span>
+                                <span class="badge {% if area.available_bus > 0 %}badge-available{% else %}badge-full{% endif %}">
+                                    {{ area.available_bus }}/{{ area.total_bus }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="button" class="btn btn-primary w-100" onclick="toggleBookingForm('{{ area.id|string }}')">
+                            <i class="fas fa-ticket-alt me-2"></i>Book Now
+                        </button>
+                        
+                        <div id="bookingForm{{ area.id|string }}" class="booking-form" style="display: none;">
+                            <form onsubmit="return bookSpot('{{ area.id|string }}', event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Vehicle Type</label>
+                                    <select class="form-select" name="vehicle_type" required>
+                                        {% if area.available_two_wheeler > 0 %}
+                                        <option value="two_wheeler">Two Wheeler ({{ area.available_two_wheeler }} spots)</option>
+                                        {% endif %}
+                                        {% if area.available_four_wheeler > 0 %}
+                                        <option value="four_wheeler">Four Wheeler ({{ area.available_four_wheeler }} spots)</option>
+                                        {% endif %}
+                                        {% if area.available_bus > 0 %}
+                                        <option value="bus">Bus ({{ area.available_bus }} spots)</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Vehicle Number</label>
+                                    <input type="text" class="form-control" name="vehicle_number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date & Time</label>
+                                    <input type="datetime-local" class="form-control" name="start_date" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">End Date & Time</label>
+                                    <input type="datetime-local" class="form-control" name="end_date" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-check me-2"></i>Confirm Booking
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title mt-5 mb-4">
+            <i class="fas fa-ticket-alt me-2"></i>Your Bookings
+        </h2>
+        
+        <div class="row">
+            {% for booking in bookings %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="booking-status">
+                            {% if booking.is_verified %}
+                            <span class="badge badge-available">
+                                <i class="fas fa-check me-1"></i>Verified
+                            </span>
+                            {% else %}
+                            <span class="badge badge-full">
+                                <i class="fas fa-clock me-1"></i>Pending
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="card-title">{{ booking.spot.area.name }}</h5>
+                        
+                        <div class="vehicle-stats">
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-car me-2"></i>Vehicle Number</span>
+                                <span>{{ booking.vehicle_number }}</span>
+                            </div>
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-clock me-2"></i>Duration</span>
+                                <span>{{ booking.duration }} hours</span>
+                            </div>
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-calendar-alt me-2"></i>Start</span>
+                                <span>{{ booking.start_date.strftime('%Y-%m-%d %H:%M') }}</span>
+                            </div>
+                            <div class="vehicle-stat-item">
+                                <span><i class="fas fa-calendar-check me-2"></i>End</span>
+                                <span>{{ booking.end_date.strftime('%Y-%m-%d %H:%M') }}</span>
+                            </div>
+                        </div>
+                        
+                        {% if booking.qr_code %}
+                        <div class="qr-code">
+                            <img src="data:image/png;base64,{{ booking.qr_code }}" alt="QR Code" class="img-fluid">
+                        </div>
+                        {% endif %}
+                        
+                        <form action="{{ url_for('cancel_booking', booking_id=booking.id|string) }}" method="POST">
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                <i class="fas fa-times me-2"></i>Cancel Booking
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% if not bookings %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>You have no active bookings
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleBookingForm(areaId) {
+            const forms = document.getElementsByClassName('booking-form');
+            for (let form of forms) {
+                if (form.id !== `bookingForm${areaId}`) {
+                    form.style.display = 'none';
+                }
+            }
+            const form = document.getElementById(`bookingForm${areaId}`);
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showLoading() {
+            document.querySelector('.loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.querySelector('.loading').style.display = 'none';
+        }
+
+        function bookSpot(areaId, event) {
+            event.preventDefault();
+            showLoading();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            formData.append('area_id', areaId);
+
+            fetch('/book_spot', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.error) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger mt-3';
+                    errorDiv.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i>${data.error}`;
+                    form.prepend(errorDiv);
+                    setTimeout(() => errorDiv.remove(), 3000);
+                } else {
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'alert alert-success mt-3';
+                    successDiv.innerHTML = `<i class="fas fa-check-circle me-2"></i>${data.message}`;
+                    form.innerHTML = '';
+                    form.appendChild(successDiv);
+                    
+                    if (data.qr_code) {
+                        const qrContainer = document.createElement('div');
+                        qrContainer.className = 'qr-code mt-3';
+                        const qrImage = document.createElement('img');
+                        qrImage.src = `data:image/png;base64,${data.qr_code}`;
+                        qrImage.className = 'img-fluid';
+                        qrContainer.appendChild(qrImage);
+                        form.appendChild(qrContainer);
+                    }
+                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger mt-3';
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i>Error booking spot: ${error}`;
+                form.prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 3000);
+            });
+            return false;
+        }
+    </script>
+</body>
+</html>

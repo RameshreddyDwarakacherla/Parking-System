@@ -1,0 +1,43 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    margin-bottom: 2rem;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.vehicle-counts p {
+    margin-bottom: 0.5rem;
+}
+
+.booking-card {
+    margin-bottom: 1.5rem;
+}
+
+.qr-code-container {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.qr-code-container img {
+    max-width: 150px;
+    margin: 0 auto;
+}
+
+.alert {
+    margin-bottom: 1.5rem;
+}
+
+.table img {
+    max-width: 100px;
+    height: auto;
+}
